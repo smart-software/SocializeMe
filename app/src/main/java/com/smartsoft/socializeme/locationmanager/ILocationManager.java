@@ -7,4 +7,6 @@ import android.location.Location;
  */
 public interface ILocationManager {
     Location getLastKnownLocation();
+    void setLocationListener(ILocationListener listener);
+    void startLocationUpdates(long minTime, float minDistance);
 }
