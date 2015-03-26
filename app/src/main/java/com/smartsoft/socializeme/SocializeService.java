@@ -9,6 +9,7 @@ import com.parse.Parse;
 
 import com.smartsoft.socializeme.locationmanager.ILocationListener;
 import com.smartsoft.socializeme.locationmanager.ILocationManager;
+import com.smartsoft.socializeme.locationmanager.ISaveCallback;
 import com.smartsoft.socializeme.servicelocator.ObjectFactory;
 import com.smartsoft.socializeme.usermanager.ICountNearUsersCallback;
 import com.smartsoft.socializeme.usermanager.ICurrentUser;
@@ -58,7 +59,7 @@ public class SocializeService extends Service implements ILocationListener {
         // Start receive location updates
         ILocationManager locationManager = ObjectFactory.getLocationManager();
         m_lastKnownLocation = locationManager.getLastKnownLocation();
-        locationManager.startLocationUpdates(1000L * 60, this.MAX_DISTANCE); // Redo this
+        locationManager.startLocationUpdates(0, this.MAX_DISTANCE); // Redo this
 
         m_checkNearUsersTimer = new Timer(true);
         m_checkNearUsersTimer.scheduleAtFixedRate(new TimerTask() {
@@ -87,7 +88,12 @@ public class SocializeService extends Service implements ILocationListener {
             // Send current user's new location to the cloud
             ICurrentUser currentUser = ObjectFactory.getUserManager().getCurrentUser();
             currentUser.setPosition(m_lastKnownLocation);
-            currentUser.save();
+            currentUser.save(new ISaveCallback() {
+                @Override
+                public void done() {
+                    // DO nothing
+                }
+            });
         }
     }
 
