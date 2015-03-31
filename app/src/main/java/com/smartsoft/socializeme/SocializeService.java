@@ -68,7 +68,7 @@ public class SocializeService extends Service implements ILocationListener {
                 // Check if are there some users near current location
                 checkNearUsers();
             }
-        }, 1000L, 60L * 1000 * 10);
+        }, 1000L, 5L * 1000);
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -90,7 +90,7 @@ public class SocializeService extends Service implements ILocationListener {
             currentUser.setPosition(m_lastKnownLocation);
             currentUser.save(new ISaveCallback() {
                 @Override
-                public void done() {
+                public void done(SaveResult saveResult) {
                     // DO nothing
                 }
             });

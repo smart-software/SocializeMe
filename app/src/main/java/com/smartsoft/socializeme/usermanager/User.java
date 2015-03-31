@@ -19,9 +19,29 @@ public class User implements IUser {
     }
 
     @Override
+    public String getID() {
+        return m_parseUser.getObjectId();
+    }
+
+    @Override
     public void setPosition(Location position) {
         ParseGeoPoint point = new ParseGeoPoint(position.getLatitude(), position.getLongitude());
         m_parseUser.put("location", point);
+    }
+
+    @Override
+    public Location getPosition() {
+        ParseGeoPoint point = (ParseGeoPoint) m_parseUser.get("location");
+        if(point != null) {
+            Location userPosition = new Location("dummyprovider");
+            userPosition.setLatitude(point.getLatitude());
+            userPosition.setLongitude(point.getLongitude());
+
+            return userPosition;
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -29,7 +49,10 @@ public class User implements IUser {
         m_parseUser.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                saveCallback.done();
+                ISaveCallback.SaveResult saveResult = ISaveCallback.SaveResult.FAILED;
+                if(e == null) saveResult = ISaveCallback.SaveResult.SUCCESS;
+
+                saveCallback.done(saveResult);
             }
         });
     }
